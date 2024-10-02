@@ -5,7 +5,7 @@ on: push
 
 env:
   # these would normally set in Github secrets
-  IQ_SERVER_URL: "https://7a6b-2a00-23c7-6435-5a00-91de-a054-48f5-2842.ngrok-free.app"
+  IQ_SERVER_URL: https\://7a6b-2a00-23c7-6435-5a00-91de-a054-48f5-2842.ngrok-free.app
   IQ_USER: admin
   IQ_PWD: admin123
   IQ_APP: webgoat2_gha
