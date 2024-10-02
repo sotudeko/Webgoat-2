@@ -2,6 +2,15 @@
 name: Build app
 
 on: push
+
+env:
+  # these would normally set in Github secrets
+  IQ_SERVER_URL = 'https://7a6b-2a00-23c7-6435-5a00-91de-a054-48f5-2842.ngrok-free.app'
+  IQ_USER = 'admin'
+  IQ_PWD = 'admin123'
+  IQ_APP = 'webgoat2_gha'
+  BUILD_FILE = 'target/*.war'
+
   
 jobs:
   build:
@@ -33,31 +42,34 @@ jobs:
     - name: What have we got? 
       run: ls -l target/
 
+    - name: Sonatype IQ scan 
+      run: echo 'Staring Sonatype IQ scan'
+
     - name: Evaluate Sonatype CLI
       id: evaluate
       uses: sonatype/actions/evaluate@v1
       with:
-        iq-server-url: https://7a6b-2a00-23c7-6435-5a00-91de-a054-48f5-2842.ngrok-free.app
-        username: admin
-        password: admin123
-        application-id: webgoat2_gha
-        scan-targets: target/*.war
+        iq-server-url: ${{IQ_SERVER_URL}}
+        username: ${{IQ_USER}}
+        password: ${{IQ_PWD}}
+        application-id: ${{IQ_APP}}
+        scan-targets: ${{BUILD_FILE}}
     
     # Fetch the SBOM file associated with the previous Sonatype CLI run
     - name: Fetch SBOM
       uses: sonatype/actions/fetch-sbom@v1
       if: ( success() || failure() ) && steps.evaluate.outputs.scan-id
       with:
-        iq-server-url: https://7a6b-2a00-23c7-6435-5a00-91de-a054-48f5-2842.ngrok-free.app
-        username: admin
-        password: admin123
-        application-id: webgoat2_gha
+        iq-server-url: ${{IQ_SERVER_URL}}
+        username: ${{IQ_USER}}
+        password: ${{IQ_PWD}}
+        application-id: ${{IQ_APP}}
         scan-id: ${{ steps.evaluate.outputs.scan-id }}
         sbom-standard: cyclonedx
         sbom-version: 1.5
-        artifact-name: webgoat2_gha-sbom
+        artifact-name: ${{BUILD_FILE}}-sbom
 
     - name: Run if no fail 
-      run: echo 'THis step should NOT run if the IQ scan found critical violations'
+      run: echo 'This step should NOT run if the IQ scan found critical violations'
      
    
