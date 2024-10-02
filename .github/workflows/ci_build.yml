@@ -56,5 +56,8 @@ jobs:
         sbom-standard: cyclonedx
         sbom-version: 1.5
         artifact-name: webgoat2_gha-sbom
+
+    - name: Run if no fail 
+      run: echo 'THis step should NOT run if the IQ scan found critical violations'
      
    
