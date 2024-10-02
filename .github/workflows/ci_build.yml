@@ -1,5 +1,5 @@
 
-name: Build app
+name: Build webgoat app
 
 on: push
 
@@ -45,7 +45,7 @@ jobs:
     - name: Sonatype IQ scan 
       run: echo 'Staring Sonatype IQ scan'
 
-    - name: Evaluate Sonatype CLI
+    - name: Evaluate with Sonatype CLI
       id: evaluate
       uses: sonatype/actions/evaluate@v1
       with:
@@ -56,7 +56,7 @@ jobs:
         scan-targets: ${{BUILD_ARTEFACT}}
     
     # Fetch the SBOM file associated with the previous Sonatype CLI run
-    - name: Fetch SBOM
+    - name: Fetch the SBOM
       uses: sonatype/actions/fetch-sbom@v1
       if: ( success() || failure() ) && steps.evaluate.outputs.scan-id
       with:
